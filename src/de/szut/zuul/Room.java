@@ -60,4 +60,10 @@ public class Room {
         return response.toString();
     }
 
+    public String getLongDescription() {
+        String response = "You are " + this.description + "\n";
+        response += "Exists: " + exitsToString();
+        return response;
+    }
+
 }

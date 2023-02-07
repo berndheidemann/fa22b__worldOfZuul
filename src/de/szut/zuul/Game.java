@@ -104,13 +104,11 @@ public class Game {
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        printRomInformation();
+        printRoomInformation();
     }
 
-    private void printRomInformation() {
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("Exits: " + currentRoom.exitsToString());
-        System.out.println();
+    private void printRoomInformation() {
+        System.out.println(this.currentRoom.getLongDescription());
     }
 
     /**
@@ -175,7 +173,7 @@ public class Game {
             System.out.println("There is no door!");
         } else {
             currentRoom = nextRoom;
-            printRomInformation();
+            printRoomInformation();
         }
     }
 
