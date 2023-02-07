@@ -1,5 +1,8 @@
 package de.szut.zuul;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class Room - a room in an adventure game.
  * <p>
@@ -16,12 +19,9 @@ package de.szut.zuul;
  */
 public class Room {
     private String description;
-    private Room northExit;
-    private Room southExit;
-    private Room eastExit;
-    private Room westExit;
-    private Room upExit;
-    private Room downExit;
+
+    // key "up" --> dahinter verbirgt sich dann der Raum der oben ist
+    private HashMap<String, Room> exits;
 
     /**
      * Create a room described "description". Initially, it has
@@ -32,36 +32,12 @@ public class Room {
      */
     public Room(String description) {
         this.description = description;
+        this.exits = new HashMap<>();
     }
 
-    /**
-     * Define the exits of this room.  Every direction either leads
-     * to another room or is null (no exit there).
-     *
-     * @param north The north exit.
-     * @param east  The east east.
-     * @param south The south exit.
-     * @param west  The west exit.
-     */
-    public void setExits(Room north, Room east, Room south, Room west, Room up, Room down) {
-        if (north != null) {
-            northExit = north;
-        }
-        if (east != null) {
-            eastExit = east;
-        }
-        if (south != null) {
-            southExit = south;
-        }
-        if (west != null) {
-            westExit = west;
-        }
-        if (up != null) {
-            upExit = up;
-        }
-        if (down != null) {
-            downExit = down;
-        }
+    public void setExit(String direction, Room room) {
+        // Füge der Hashmap exists einen Raum "room" hinzu, mit dem Schlüssel "direction"
+        this.exits.put(direction, room);
     }
 
     /**
@@ -72,46 +48,14 @@ public class Room {
     }
 
     public Room getExit(String direction) {
-        if (direction.equals("north")) {
-            return northExit;
-        }
-        if (direction.equals("south")) {
-            return southExit;
-        }
-        if (direction.equals("east")) {
-            return eastExit;
-        }
-        if (direction.equals("west")) {
-            return westExit;
-        }
-        if (direction.equals("up")) {
-            return upExit;
-        }
-        if (direction.equals("down")) {
-            return downExit;
-        }
-        return null;
+        // liefere mir aus der Hashmap exists den Raum mit dem Schlüssel der in direction steht
+        return this.exits.get(direction);
     }
 
     public String exitsToString() {
         StringBuilder response = new StringBuilder("");
-        if (northExit != null) {
-            response.append("north");
-        }
-        if (southExit != null) {
-            response.append("south");
-        }
-        if (eastExit != null) {
-            response.append("east ");
-        }
-        if (westExit != null) {
-            response.append("west ");
-        }
-        if (downExit != null) {
-            response.append("down ");
-        }
-        if (upExit != null) {
-            response.append("up ");
+        for (String key : this.exits.keySet()) {
+            response.append(key + " ");
         }
         return response.toString();
     }
