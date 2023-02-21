@@ -75,6 +75,9 @@ public class Game {
         basement.setExit("up", templePyramid);
         chamberOfSorcerer.setExit("window", marketsquare);
 
+        Item bow=new Item("bow", "made of wood", 0.5);
+        marketsquare.putItem(bow);
+
         currentRoom = marketsquare;  // start game on marketsquare
     }
 
