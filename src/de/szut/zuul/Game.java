@@ -227,29 +227,30 @@ public class Game {
 
     private void takeItem(Command command) {
         String itemName = command.getSecondWord();
-        Item itemToTake = this.player.getCurrentRoom().removeItem(itemName);
-        if (itemToTake == null) {
-            System.out.println("Der Gegenstand existiert nicht!");
-        } else {
-            boolean taken = this.player.takeItem(itemToTake);
-            if (!taken) {
-                System.out.println("Der Gegenstand ist zu schwer!");
+        try {
+            Item itemToTake = this.player.getCurrentRoom().removeItem(itemName);
+            try {
+                this.player.takeItem(itemToTake);
+                System.out.println(this.player.showStatus());
+                System.out.println(this.player.getCurrentRoom().getLongDescription());
+            } catch (ItemTooHeavyException e) {
+                System.out.println(e.getMessage());
                 this.player.getCurrentRoom().putItem(itemToTake);
             }
+        } catch (ItemNotFoundException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println(this.player.showStatus());
-        System.out.println(this.player.getCurrentRoom().getLongDescription());
     }
 
     private void dropItem(Command command) {
         String itemName = command.getSecondWord();
-        Item itemToDrop = this.player.dropItem(itemName);
-        if (itemToDrop == null) {
-            System.out.println("Der Spieler hat diesen Gegenstand nicht!");
-        } else {
+        try {
+            Item itemToDrop = this.player.dropItem(itemName);
             this.player.getCurrentRoom().putItem(itemToDrop);
+            System.out.println(this.player.showStatus());
+            System.out.println(this.player.getCurrentRoom().getLongDescription());
+        } catch (ItemNotFoundException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println(this.player.showStatus());
-        System.out.println(this.player.getCurrentRoom().getLongDescription());
     }
 }

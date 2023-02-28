@@ -31,6 +31,7 @@ public class Room {
 
 
     // Konstruktor, mit dem Parameter "description"
+
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
@@ -110,9 +111,12 @@ public class Room {
         return String.format("You are %s\nExits: %s\nItems in this room:\n%s", description, exitsToString(), itemsToString());
     }
 
-    public Item removeItem(String name) {
+    public Item removeItem(String name) throws ItemNotFoundException {
         // this.items --> Hashmap mit Schlüssel String und Value Item --> In this.items sind Items anhand ihres Namens gespeichert
         // Suche in der Hashmap das Item mit dem Schlüssel "name" und entferne das Item und den Schlüssel
+        if (this.items.get(name) == null) {
+            throw new ItemNotFoundException();
+        }
         return this.items.remove(name);
     }
 }
