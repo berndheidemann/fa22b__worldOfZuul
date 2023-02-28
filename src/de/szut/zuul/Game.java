@@ -19,12 +19,14 @@ package de.szut.zuul;
 
 public class Game {
     private Parser parser;
-    private Room currentRoom;
+
+    private Player player;
 
     /**
      * Create the game and initialise its internal map.
      */
     public Game() {
+        this.player = new Player();
         createRooms();
         parser = new Parser();
     }
@@ -84,8 +86,9 @@ public class Game {
         Item spear = new Item("spear", "a spear with accompanying slingshot", 5.0);
         Item food = new Item("food", "a plate of hearty meat and maize porridge", 0.5);
         Item headdress = new Item("headdress", "a very pretty headdress", 1.0);
-
+        Item notebook = new Item("notebook", "a heavy gaming notebook", 9.9);
         marketsquare.putItem(bow);
+        marketsquare.putItem(notebook);
         cave.putItem(treasure);
         chamberOfSorcerer.putItem(arrows);
         jungle.putItem(herb);
@@ -95,7 +98,7 @@ public class Game {
         tavern.putItem(food);
         cave.putItem(headdress);
 
-        currentRoom = marketsquare;  // start game on marketsquare
+        this.player.goTo(marketsquare);  // start game on marketsquare
     }
 
     /**
@@ -128,7 +131,7 @@ public class Game {
     }
 
     private void printRoomInformation() {
-        System.out.println(this.currentRoom.getLongDescription());
+        System.out.println(this.player.getCurrentRoom().getLongDescription());
     }
 
     /**
@@ -154,6 +157,10 @@ public class Game {
             wantToQuit = quit(command);
         } else if (commandWord.equals("look")) {
             look();
+        } else if (commandWord.equals("take")) {
+            takeItem(command);
+        } else if (commandWord.equals("drop")) {
+            dropItem(command);
         }
 
         return wantToQuit;
@@ -189,12 +196,12 @@ public class Game {
 
         // Try to leave current room.
         Room nextRoom = null;
-        nextRoom = currentRoom.getExit(direction);
+        nextRoom = this.player.getCurrentRoom().getExit(direction);
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
         } else {
-            currentRoom = nextRoom;
+            this.player.goTo(nextRoom);
             printRoomInformation();
         }
     }
@@ -215,6 +222,34 @@ public class Game {
     }
 
     private void look() {
-        System.out.println(this.currentRoom.getLongDescription());
+        System.out.println(this.player.getCurrentRoom().getLongDescription());
+    }
+
+    private void takeItem(Command command) {
+        String itemName = command.getSecondWord();
+        Item itemToTake = this.player.getCurrentRoom().removeItem(itemName);
+        if (itemToTake == null) {
+            System.out.println("Der Gegenstand existiert nicht!");
+        } else {
+            boolean taken = this.player.takeItem(itemToTake);
+            if (!taken) {
+                System.out.println("Der Gegenstand ist zu schwer!");
+                this.player.getCurrentRoom().putItem(itemToTake);
+            }
+        }
+        System.out.println(this.player.showStatus());
+        System.out.println(this.player.getCurrentRoom().getLongDescription());
+    }
+
+    private void dropItem(Command command) {
+        String itemName = command.getSecondWord();
+        Item itemToDrop = this.player.dropItem(itemName);
+        if (itemToDrop == null) {
+            System.out.println("Der Spieler hat diesen Gegenstand nicht!");
+        } else {
+            this.player.getCurrentRoom().putItem(itemToDrop);
+        }
+        System.out.println(this.player.showStatus());
+        System.out.println(this.player.getCurrentRoom().getLongDescription());
     }
 }

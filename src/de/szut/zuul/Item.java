@@ -18,10 +18,14 @@ public class Item {
     }
 
     public String toString() {
-        return this.name + ", " + this.description +", " + this.weight;
+        return this.name + ", " + this.description + ", " + this.weight;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public double getWeight() {
+        return this.weight;
     }
 }
